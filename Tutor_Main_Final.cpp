@@ -14,9 +14,9 @@ queue<vector<string>> internal_Queue;
 int main(){
   
   /*
-  add_tutor("Joe","Mama","History","100.00",
+  add_tutor("John","Smith","Science","50.00",
     "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JM");
-  add_tutor("Mary","Sue","Math","450.00",
+  add_tutor("Andrew","Toderian","Math","90.00",
     "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JMs");
   */
 
@@ -25,7 +25,14 @@ int main(){
   printQ(internal_Queue);
   cout<<endl<<endl;
 
-  printV(GetTutorLine(762));
+  printV(GetTutorLine(509));
+
+  getRating(509,true);
+  getRating(509,false);
+  Rate_Tutor(509,5);
+
+  
+
 
   
 
