@@ -112,7 +112,24 @@ void printQ(queue<vector<string>> input){
     }
 }
 
-void change_rating(double location, string newRate)
-{
-    
+
+vector<string> GetTutorLine(double location){
+    fstream tutors(filename1);
+    string line;
+    vector<string> interm;
+
+    if (tutors.is_open()) {
+        tutors.seekg(location);
+        getline(tutors,line);
+        interm = line_to_vector(line,interm);
+    }
+    else {
+        cout<<"ListOfTutors_F.txt could not be opened. GettutorLine"<<endl;
+        return interm;
+    }
+    return interm;
+}
+
+int getRating(double position){
+
 }
