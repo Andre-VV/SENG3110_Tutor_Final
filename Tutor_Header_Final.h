@@ -13,10 +13,10 @@
 #include <queue>
 #include <math.h>
 
-
-
 using namespace std;
 
+
+//file names to use in functions
 string filename1 = "ListOfTutors_F.txt";
 string filename2 = "KeyList_F.txt";
 
@@ -29,14 +29,16 @@ void add_tutor(const string& fname,
     const string& email,
     const string& bio) {
 
+
+    //Adds a entry to main data file and an entry to the key file
     double position;
     fstream tutors(filename1);
     tutors.seekp(0,fstream::end);
     cout<<"Fuction running"<<endl;
     if (tutors.is_open()) {
-        cout<<"tutors open"<<endl;
+        //cout<<"tutors open"<<endl;
         position = tutors.tellp();
-        cout<<position<<endl;
+        //cout<<position<<endl;
         tutors<<position<<"|"<<fname<<"|"<<lname<<"|"<<subject<<"|"<<price<<"|"<<"*0.0 ^0.0000^"<<"|"<<city<<"|"<<country<<"|"<<email<<"|"<<bio<<"|"<<endl;
     }
     else {
@@ -47,7 +49,7 @@ void add_tutor(const string& fname,
     fstream Keys(filename2);
     Keys.seekp(0,fstream::end);
     if (Keys.is_open()) {
-        cout<<"Keys open"<<endl;
+        //cout<<"Keys open"<<endl;
         Keys<<position<<"|"<<subject<<"|"<<price<<"|"<<"0.0"<<"|"<<endl;
     }
     else {
@@ -58,6 +60,7 @@ void add_tutor(const string& fname,
 }
 
 vector<string> line_to_vector(string input, vector<string> vec_interm){
+    //converts a string from a file to a vector using "|" as a delimiter
     int pos1 = 0;
     char cur;
     string temp_str;
@@ -77,6 +80,7 @@ queue<vector<string>> SearchKeyFile(
     queue<vector<string>> Results,
     string key1)
 {
+    //searches the key file for lines with a key in them and adds them to a queue
     fstream Keys(filename2);
     string test;
     vector<string> temp_vector;
@@ -102,6 +106,7 @@ queue<vector<string>> SearchKeyFile(
 }
 
 void printV(vector<string> input){
+    //prints vector to the teminal
     for (int i = 0; i < input.size(); i++)
     {
         cout << input[i] << " ";
@@ -109,6 +114,7 @@ void printV(vector<string> input){
     cout<<endl;
 }
 void printQ(queue<vector<string>> input){
+    //using printV prints a queue to the terminal
     while(!input.empty()){
         printV(input.front());
         input.pop();
@@ -117,6 +123,7 @@ void printQ(queue<vector<string>> input){
 
 
 vector<string> GetTutorLine(double location){
+    //gets a line from the main data file based on location
     fstream tutors(filename1);
     string line;
     vector<string> interm;
@@ -135,6 +142,8 @@ vector<string> GetTutorLine(double location){
 }
 
 double getRating(double location, bool R_or_num){
+    //gets the rating or the number of rating from a line in the main data file
+    //based on location
     //True returns rating. False returns number of ratings
     fstream tutors(filename1);
     vector<string> interm;
@@ -178,6 +187,8 @@ double getRating(double location, bool R_or_num){
 }
 
 void insert_New_Rating(double location, float Rate, double num_rate ){
+    //inserts a rating and number of ratings into a line in the main data file
+    //unfinished, need to make it add rating to key file
     fstream tutors(filename1);
     vector<string> interm;
     string rate_Section;
@@ -239,6 +250,7 @@ void insert_New_Rating(double location, float Rate, double num_rate ){
 
 
 void Rate_Tutor(double location, double new_rate){
+    //main function to rate a tutor.
     double cur_rate;
     double num_rate;
     double new_num_rate;
@@ -255,9 +267,4 @@ void Rate_Tutor(double location, double new_rate){
     cout<<calc<<endl;
 
     insert_New_Rating(location,calc,new_num_rate);
-
-
-    
-    
-
 }
