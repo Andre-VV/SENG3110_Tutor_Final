@@ -35,7 +35,7 @@ void add_tutor(const string& fname,
         cout<<"tutors open"<<endl;
         position = tutors.tellp();
         cout<<position<<endl;
-        tutors<<position<<"|"<<fname<<"|"<<lname<<"|"<<subject<<"|"<<price<<"|"<<"*0.0 ^0     ^"<<"|"<<city<<"|"<<country<<"|"<<email<<"|"<<bio<<"|"<<endl;
+        tutors<<position<<"|"<<fname<<"|"<<lname<<"|"<<subject<<"|"<<price<<"|"<<"*0.0 ^0.0000^"<<"|"<<city<<"|"<<country<<"|"<<email<<"|"<<bio<<"|"<<endl;
     }
     else {
         cout<<"ListOfTutors_F.txt could not be opened"<<endl;
@@ -154,7 +154,7 @@ double getRating(double location, bool R_or_num){
         }
         else{
             for(int i = 6; i < rate_Section.size(); i++){
-                if(rate_Section[i] == ' '){
+                if(rate_Section[i] == '.'){
                     num_rates_str = rate_Section.substr(6,i-4);
                     break; 
                 }
@@ -177,6 +177,11 @@ void insert_New_Rating(double location, float Rate, double num_rate ){
     vector<string> interm;
     string rate_Section;
     char search;
+    string rate_str;
+    string num_str;
+    char const *rate_char;
+    char const *num_char;
+
     if (tutors.is_open()){
         tutors.seekg(location);
         cout<<endl<<endl;
@@ -185,14 +190,32 @@ void insert_New_Rating(double location, float Rate, double num_rate ){
             cout<<search;
 
         }
+        double pos = tutors.tellg();
+        tutors.seekg(pos-2);
+
+        rate_str = to_string(Rate);
+        //cout<<endl<<"rate_str: "<<rate_str<<endl;
+        rate_str.resize(3);
+        //cout<<"rate_str: "<<rate_str<<endl;
+        rate_char = rate_str.c_str();
+        //cout<<"rate_char: "<<rate_char<<endl;
+
+        num_str = to_string(num_rate);
+        //cout<<endl<<"num_str: "<<num_str<<endl;
+        num_str.resize(6);
+        //cout<<"num_str: "<<num_str<<endl;
+        num_char = num_str.c_str();
+        //cout<<"num_char: "<<num_char<<endl;
+        tutors.write(rate_char,3);
+        pos = tutors.tellg();
+        tutors.seekg(pos + 2);
+        tutors.write(num_char,6);
     }
     else{
         cout<<"ListOfTutors_F.txt could not be opened. insert_New_Rating"<<endl;
         return;
     }
     tutors.close();
-
-
 }
 
 void Rate_Tutor(double location, double new_rate){
@@ -206,10 +229,12 @@ void Rate_Tutor(double location, double new_rate){
 
     calc = (cur_rate * num_rate) + new_rate;
     new_num_rate = num_rate + 1;
-    calc = calc/(num_rate + 1);
+    calc = calc/(new_num_rate);
     cout<<endl<<calc<<endl;
     calc = roundf(calc *10)/10;
     cout<<calc<<endl;
+
+    insert_New_Rating(location,calc,new_num_rate);
 
 
     

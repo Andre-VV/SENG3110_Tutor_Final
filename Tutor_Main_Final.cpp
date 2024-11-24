@@ -15,30 +15,19 @@ int main(){
   
   /*
   add_tutor("John","Smith","Science","50.00",
-    "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JM");
+    "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JS");
   add_tutor("Andrew","Toderian","Math","90.00",
+    "Kamloops","Canada","email","this is my bio it is very long and a good way to test this AT");
+  add_tutor("Joe","Mama","Science","900.00",
+    "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JM");
+  add_tutor("Tony","Hawk","Science","40.00",
+    "Kamloops","Canada","email","this is my bio it is very long and a good way to test this TH");
+  add_tutor("Owen","Toderian","Science","50.00",
+    "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JM");
+  add_tutor("Luke","Skywalker","Math","90.00",
     "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JMs");
   */
 
-  cout<<endl;
-  internal_Queue = SearchKeyFile(internal_Queue,"Math");
-  printQ(internal_Queue);
-  cout<<endl<<endl;
-
-  printV(GetTutorLine(509));
-
-  getRating(509,true);
-  getRating(509,false);
-  Rate_Tutor(509,5);
-
-  
-
-
-  
-
-
-
-
-  
+   
   return 0;
 }

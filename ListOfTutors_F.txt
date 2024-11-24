@@ -1,6 +1,6 @@
-0|Joe|Mama|History|100.00|*0.0 ^0     ^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JM|
-126|Mary|Sue|Math|450.00|*0.0 ^0     ^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JMs|
-252|Tom|Cuise|Science|100.00|*0.0 ^0     ^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JM|
-381|Matt|Damon|Math|400.00|*0.0 ^0     ^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JMs|
-509|John|Smith|Science|50.00|*3.2 ^56    ^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JM|
-638|Andrew|Toderian|Math|90.00|*0.0 ^0     ^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JMs|
+0|John|Smith|Science|50.00|*0.0 ^0.0000^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JS|
+127|Andrew|Toderian|Math|90.00|*0.0 ^0.0000^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this AT|
+258|Joe|Mama|Science|900.00|*0.0 ^0.0000^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JM|
+386|Tony|Hawk|Science|40.00|*0.0 ^0.0000^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this TH|
+514|Owen|Toderian|Science|50.00|*0.0 ^0.0000^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JM|
+646|Luke|Skywalker|Math|90.00|*0.0 ^0.0000^|Kamloops|Canada|email|this is my bio it is very long and a good way to test this JMs|
