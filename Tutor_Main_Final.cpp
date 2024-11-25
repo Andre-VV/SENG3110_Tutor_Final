@@ -29,12 +29,17 @@ int main(){
     "Kamloops","Canada","email","this is my bio it is very long and a good way to test this JMs");
   */
 
-  Rate_Tutor(0,5.0);
-  Rate_Tutor(127,3.0);
-  Rate_Tutor(258,4.5);
-  Rate_Tutor(386,1.3);
-  Rate_Tutor(514,0.2);
-  Rate_Tutor(646,5.0);
+  //Rate_Tutor(0,1.0);
+  //Rate_Tutor(127,2.0);
+  //Rate_Tutor(258,1.5);
+  //Rate_Tutor(386,1.3);
+  //Rate_Tutor(514,4.2);
+  //Rate_Tutor(646,5.0);
+
+  internal_Queue = SearchKeyFile(internal_Queue,"Science");
+  printQ(internal_Queue);
+  
+  
   
   return 0;
 }

@@ -77,6 +77,60 @@ vector<string> line_to_vector(string input, vector<string> vec_interm){
     return vec_interm;
 }
 
+list<vector<string>> listSort(list<vector<string>> input_list, vector<string> input_vec){
+    //adds a value to a list in the correct location so the list is sorted
+    vector<string> vector1;
+    list<vector<string>>::iterator point;
+    string rate1;
+    string rate2;
+    double rate1_d;
+    double rate2_d;
+
+    rate2 = input_vec[3];
+    rate2_d = stod(rate2);
+
+    for(point = input_list.begin(); point != input_list.end(); point++){
+        vector1 = *point;
+
+        rate1 = vector1[3];
+        rate1_d = stod(rate1);
+
+        if(rate2_d > rate1_d){
+            input_list.insert(point,input_vec);
+            return input_list;
+        }
+        vector1.clear();
+    }
+    input_list.push_back(input_vec);
+    return input_list;
+
+}
+
+queue<vector<string>> sortQ(queue<vector<string>> input){
+    //sorts a list by rating in decending order
+    //takes an unsorted queue as an input and oupputs a sorted queue
+    list<vector<string>> sortingList;
+    vector<string> vector1;
+
+    vector1 = input.front();
+    input.pop();
+    sortingList.push_front(vector1);
+    vector1.clear();
+
+    while(!input.empty()){
+        vector1 = input.front();
+        input.pop();
+        sortingList = listSort(sortingList,vector1);
+        vector1.clear();
+    }
+    long sortSize = sortingList.size();
+    for(long i = 0; i < sortSize; i++){
+        input.push(sortingList.front());
+        sortingList.pop_front();
+    }
+    return input;
+}
+
 queue<vector<string>> SearchKeyFile(
     queue<vector<string>> Results,
     string key1)
@@ -103,6 +157,7 @@ queue<vector<string>> SearchKeyFile(
         return Results;
     }
     Keys.close();
+    Results = sortQ(Results);
     return Results;
 }
 
@@ -189,7 +244,8 @@ double getRating(double location, bool R_or_num){
 
 void insert_New_Rating(double location, float Rate, double num_rate ){
     //inserts a rating and number of ratings into a line in the main data file
-    //unfinished, need to make it add rating to key file
+    //also changes rating in the keyfile
+
     fstream tutors(filename1);
     vector<string> interm;
     string rate_Section;
@@ -208,7 +264,7 @@ void insert_New_Rating(double location, float Rate, double num_rate ){
         tutors.seekp(0);
         tutors.seekg(location);
         tutors.seekp(location);
-        cout<<endl<<endl;
+        //cout<<endl<<endl;
         search = tutors.get();
         calc = tutors.tellg();
         error = (calc - 1) - location;
@@ -246,6 +302,76 @@ void insert_New_Rating(double location, float Rate, double num_rate ){
         return;
     }
     tutors.close();
+    fstream keys(filename2);
+    vector<string> keyLine;
+    string locationString;
+    string tempLine;
+    double locationKeys;
+    string temp_str;
+    double errorLocation;
+    int errorKeys1;
+    int errorKeys2;
+    long errorCount = 1;
+    
+    
+
+    if(keys.is_open()){
+        //cout<<endl<<"keyfile part:"<<endl<<"location double: "<<location<<endl;
+        locationString = to_string((long)location);
+        //cout<<"Location string: "<<locationString<<endl;
+        keys.seekp(0);
+        //cout<<"location: "<<keys.tellp()<<endl;
+        getline(keys,tempLine);
+        errorKeys2 = keys.tellp();
+        //cout<<"start of line 2: "<<errorKeys2<<endl;
+        errorKeys1 = tempLine.size();
+        //cout<<"size of line 1: "<<errorKeys1<<endl;
+
+        keys.seekp(0);
+        error = errorKeys2 - errorKeys1;
+        //cout<<"error: "<<error<<endl;
+
+        
+
+        while(!keys.eof()){
+            locationKeys = keys.tellg();
+            //cout<<"searching: "<<locationKeys<<endl;
+            getline(keys,tempLine);
+            keyLine = line_to_vector(tempLine,keyLine);
+            if(keyLine[0] == locationString){;
+                //cout<<"Found: "<<keys.tellg()<<"  Write location: "<<keys.tellp()<<endl;
+                keyLine[3] = rate_str;
+                keys.seekp(0);
+                //cout<<"Return to begining: "<<keys.tellp()<<endl;
+                locationKeys = locationKeys - (error - errorCount);
+                if (locationKeys < 0){
+                    locationKeys = 0;
+                }
+                keys.seekp(locationKeys);
+                //cout<<"write Location: "<<keys.tellp()<<endl;
+                for(int i = 0; i < 4; i++){
+                    temp_str = keyLine[i];
+                    //cout<<"inserting: "<<temp_str<<"  Location: "<<keys.tellp()<<endl;
+                    keys.write(temp_str.c_str(),temp_str.size());
+                    locationKeys = keys.tellp();
+                    keys.seekp(locationKeys+1);
+                    //cout<<"end location: "<<keys.tellp()<<endl;
+
+                }
+                keys.close();
+                return;
+
+            }
+            errorCount++;
+            keyLine.clear();
+            
+        }
+
+    }
+    else{
+        cout<<"KeyLift_F.txt could not be opened. insert_New_Rating"<<endl;
+        return;
+    }   
 }
 
 
@@ -263,11 +389,13 @@ void Rate_Tutor(double location, double new_rate){
     calc = (cur_rate * num_rate) + new_rate;
     new_num_rate = num_rate + 1;
     calc = calc/(new_num_rate);
-    cout<<endl<<calc<<endl;
+    //cout<<endl<<calc<<endl;
     calc = roundf(calc *10)/10;
-    cout<<calc<<endl;
+    //cout<<calc<<endl;
 
     insert_New_Rating(location,calc,new_num_rate);
 }
+
+
 
 
