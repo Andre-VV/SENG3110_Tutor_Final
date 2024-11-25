@@ -12,6 +12,7 @@
 #include <fstream>
 #include <queue>
 #include <math.h>
+#include <list>
 
 using namespace std;
 
@@ -268,3 +269,5 @@ void Rate_Tutor(double location, double new_rate){
 
     insert_New_Rating(location,calc,new_num_rate);
 }
+
+
