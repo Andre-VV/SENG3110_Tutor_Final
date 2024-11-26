@@ -1,46 +1,55 @@
-#ifndef TUTOR_Main_F_H
-#define TUTOR_Main_F_H
+#ifndef TUTOR_MAIN_FINAL_H
+#define TUTOR_MAIN_FINAL_H
 
 #include <iostream>
 #include <string>
 #include <vector>
 #include <fstream>
 #include <queue>
+#include <math.h>
+#include <list>
 
 using namespace std;
 
-// Function to add a tutor's information to the file
-void add_tutor(const string& fname,
-    const string& lname,
-    const string& subject,
-    const string& price,
-    const string& city,
-    const string& country,
-    const string& email,
-    const string& bio);
+// File names to use in functions
+extern string filename1; // ListOfTutors_F.txt
+extern string filename2; // KeyList_F.txt
 
-// Function to convert a string from a file to a vector
+// Function Declarations
+
+// Adds a tutor to both the main data file and the key file
+void add_tutor(const string& fname, const string& lname, const string& subject,
+    const string& price, const string& city, const string& country,
+    const string& email, const string& bio);
+
+// Converts a string from a file to a vector using "|" as a delimiter
 vector<string> line_to_vector(string input, vector<string> vec_interm);
 
-// Function to search the Key List file for a specific key
+// Adds a value to a list in the correct location so the list is sorted
+list<vector<string>> listSort(list<vector<string>> input_list, vector<string> input_vec);
+
+// Sorts a queue by rating in descending order
+queue<vector<string>> sortQ(queue<vector<string>> input);
+
+// Searches the key file for a key and adds it to a queue
 queue<vector<string>> SearchKeyFile(queue<vector<string>> Results, string key1);
 
-// Function to print a vector of strings
+// Prints a vector to the terminal
 void printV(vector<string> input);
 
-// Function to print a queue of vectors
+// Prints a queue of vectors to the terminal
 void printQ(queue<vector<string>> input);
 
-// Function to get a tutor's line based on the position in the main data file
+// Gets a tutor's line from the main data file based on the location
 vector<string> GetTutorLine(double location);
 
-// Function to get the rating or number of ratings from the tutor data
+// Gets the rating or the number of ratings from a line in the main data file
 double getRating(double location, bool R_or_num);
 
-// Function to insert a new rating into the tutor data file
+// Inserts a rating and number of ratings into the main data file and updates the key file
 void insert_New_Rating(double location, float Rate, double num_rate);
 
-// Function to rate a tutor and update their rating in the data file
+// Rates a tutor by calculating the new rating and number of ratings, and then updates the files
 void Rate_Tutor(double location, double new_rate);
 
 #endif 
