@@ -31,15 +31,20 @@ SearchTutor::SearchTutor(wxWindow* parent)
 
         // Clear the list before adding new entries
         tutorList->Clear();
-
+        string tutorName;
         if (subject == "All") {
             // Fetch all tutors if "All" is selected
             fstream tutors("ListOfTutors_F.txt");
             string line;
+            
             while (getline(tutors, line)) {
                 vector<string> tutorDetails = line_to_vector(line, vector<string>());
-                string tutorName = tutorDetails[1] + " " + tutorDetails[2];  // Full name: first + last
-                tutorList->Append(tutorName);  // Add tutor name to the list
+                if (tutorDetails.size() > 2)
+                {
+                     tutorName = tutorDetails[1] + " " + tutorDetails[2];  // Full name: first + last
+                     tutorList->Append(tutorName);  // Add tutor name to the list
+                }
+                
             }
             tutors.close();
         }
@@ -56,11 +61,16 @@ SearchTutor::SearchTutor(wxWindow* parent)
 
                 // Fetch the full tutor details from ListOfTutors_F.txt using the position
                 vector<string> tutorDetails = GetTutorLine(position);
-                string tutorName = tutorDetails[1] + " " + tutorDetails[2];  // Full name: first + last
-                tutorList->Append(tutorName);  // Add tutor name to the list
+                if (tutorDetails.size() > 2)
+                {
+                    tutorName = tutorDetails[1] + " " + tutorDetails[2];  // Full name: first + last
+                    tutorList->Append(tutorName);  // Add tutor name to the list
+                }
+                
+                
             }
         }
-            });
+        });
 
     tutorList->Bind(wxEVT_LISTBOX, [=](wxCommandEvent& event) {
         // Get the index of the selected tutor in the list box
@@ -72,17 +82,9 @@ SearchTutor::SearchTutor(wxWindow* parent)
             wxString selectedSubject = filterDropdown->GetStringSelection();
             string subject = selectedSubject.ToStdString();
 
-            // Create filtered tutor vector string
-            queue<vector<string>> filteredTutors;
-            //Check the subject if its ALL or a specific subject
-            if (subject == "All") {
-                // Fetch all tutors without applying any filter from the key file
-                filteredTutors = SearchKeyFile(queue<vector<string>>(), "");
-            }
-            else {
-                // Fetch the filtered tutors from the key file based on the selected subject
-                filteredTutors = SearchKeyFile(queue<vector<string>>(), subject);
-            }
+            // Create filtered tutor vector string, check if string is all then return all tutors, otherwise search by subject
+            queue<vector<string>> filteredTutors = (subject == "All") ? SearchKeyFile({}, "") : SearchKeyFile({}, subject);
+            
 
             // Traverse through the filtered tutors and get the tutor details based on the selected index
             int currentIndex = 0;
@@ -97,14 +99,24 @@ SearchTutor::SearchTutor(wxWindow* parent)
                     // Fetch the full tutor details from the ListOfTutors_F.txt file using the position
                     vector<string> tutorDetails = GetTutorLine(position);
 
-                    // Construct a string with tutor details to display
-                    wxString tutorInfo = "Name: " + tutorDetails[1] + " " + tutorDetails[2] + "\n" +
-                        "Subject: " + tutorDetails[3] + "\n" +
-                        "Price: " + tutorDetails[4] + "\n" +
-                        "City: " + tutorDetails[6] + "\n" +
-                        "Country: " + tutorDetails[7] + "\n" +
-                        "Biography: " + tutorDetails[9] + "\n" +
-                        "Rating: " + to_string(getRating(position, true)) + "\n";
+                    wxString tutorInfo;
+
+                    // Ensure tutorDetails has enough elements
+                    if (tutorDetails.size() >= 10) {
+                        tutorInfo = "Name: " + tutorDetails[1] + " " + tutorDetails[2] + "\n" +
+                            "Subject: " + tutorDetails[3] + "\n" +
+                            "Price: " + tutorDetails[4] + "\n" +
+                            "City: " + tutorDetails[6] + "\n" +
+                            "Country: " + tutorDetails[7] + "\n" +
+                            "Email: " + tutorDetails[8] + "\n" +  // Include email
+                            "Biography: " + tutorDetails[9] + "\n" +
+                            "Rating: " + to_string(getRating(position, true)) + "\n";
+                    }
+                    else {
+                        tutorInfo = "Error: Incomplete tutor details.";
+                        cerr << "Error: tutorDetails has fewer than 10 elements. Size: " << tutorDetails.size() << endl;
+                    }
+
 
                     // Display the tutor information in a message box, may want to see if this can be modified to look better
                     wxMessageBox(tutorInfo, "Tutor Information", wxOK | wxICON_INFORMATION);
@@ -116,26 +128,25 @@ SearchTutor::SearchTutor(wxWindow* parent)
         }
         });
 
-    
+
 
 
     rateButton->Bind(wxEVT_BUTTON, [=](wxCommandEvent& event) {
         // Get the selected tutor from the list
         int selectedIndex = tutorList->GetSelection();
 
-        if (selectedIndex != wxNOT_FOUND) {
+        if (selectedIndex == wxNOT_FOUND) {
+            wxMessageBox("Please select a tutor to rate.", "Error", wxICON_ERROR);
+            return;
+        }
+
+         
             // Get the subject from the dropdown to filter the tutors
             wxString selectedSubject = filterDropdown->GetStringSelection();
             string subject = selectedSubject.ToStdString();
 
-            // Fetch the filtered tutors based on the selected subject or all tutors if "All" is selected
-            queue<vector<string>> filteredTutors;
-            if (subject == "All") {
-                filteredTutors = SearchKeyFile(queue<vector<string>>(), "");
-            }
-            else {
-                filteredTutors = SearchKeyFile(queue<vector<string>>(), subject);
-            }
+            // Create filtered tutor vector string, check if string is all then return all tutors, otherwise search by subject
+            queue<vector<string>> filteredTutors = (subject == "All") ? SearchKeyFile({}, "") : SearchKeyFile({}, subject);
 
             // Find the tutor details corresponding to the selected index
             int currentIndex = 0;
@@ -149,19 +160,20 @@ SearchTutor::SearchTutor(wxWindow* parent)
 
                     // Fetch the full tutor details
                     vector<string> tutorDetails = GetTutorLine(position);
-
+                    //Check this function since it may be create
                     // Display tutor information in a message box
                     wxString tutorInfo = "Name: " + tutorDetails[1] + " " + tutorDetails[2] + "\n" +
                         "Subject: " + tutorDetails[3] + "\n" +
                         "Price: " + tutorDetails[4] + "\n" +
                         "City: " + tutorDetails[6] + "\n" +
                         "Country: " + tutorDetails[7] + "\n" +
+                        "Email: " + tutorDetails[8] + "\n" +
                         "Biography: " + tutorDetails[9] + "\n" +
                         "Current Rating: " + to_string(getRating(position, true)) + "\n" +
                         "Number of Ratings: " + to_string(getRating(position, false)) + "\n";
                     // Display the tutor details
                     wxMessageBox(tutorInfo, "Tutor Information", wxOK | wxICON_INFORMATION);
-
+                    
                     // Create the dialog for entering the rating
                     wxDialog* rateDialog = new wxDialog(this, wxID_ANY, "Rate Tutor", wxDefaultPosition, wxSize(300, 150));
                     wxBoxSizer* rateSizer = new wxBoxSizer(wxVERTICAL);
@@ -210,10 +222,10 @@ SearchTutor::SearchTutor(wxWindow* parent)
                 }
                 currentIndex++;
             }
-        }
-        else {
+        
+        
             // If no tutor is selected
             wxMessageBox("Please select a tutor to rate.", "Error", wxOK | wxICON_ERROR);
-        }
+        
         });
 }
