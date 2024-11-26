@@ -21,6 +21,39 @@ using namespace std;
 string filename1 = "ListOfTutors_F.txt";
 string filename2 = "KeyList_F.txt";
 
+void test_endline(){
+    //makes sure there is an empty line at the end of the text files
+    fstream tutors(filename1);
+    char testing;
+
+    if (tutors.is_open()) {
+        tutors.seekp(-1,fstream::end);
+        testing = tutors.get();
+        //cout<<"test: "<<testing<<endl;
+        if(testing == '|'){
+            tutors<<endl;
+        }
+    }
+    else {
+        cout<<"ListOfTutors_F.txt could not be opened. test_endline"<<endl;
+        return;
+    }
+    tutors.close();
+    fstream keys(filename2);
+    if(keys.is_open()){
+        keys.seekp(-1,fstream::end);
+        testing = keys.get();
+        if(testing == '|'){
+            keys<<endl;
+        }
+    }
+    else{
+        cout<<"KeyList_F.txt could not be opened. test_endline"<<endl;
+        return;
+    }
+    keys.close();
+}
+
 void add_tutor(const string& fname,
     const string& lname,
     const string& subject,
