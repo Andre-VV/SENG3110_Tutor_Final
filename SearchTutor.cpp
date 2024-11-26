@@ -38,13 +38,13 @@ SearchTutor::SearchTutor(wxWindow* parent)
             string line;
             
             while (getline(tutors, line)) {
-                vector<string> tutorDetails = line_to_vector(line, vector<string>());
+                vector<string> tutorDetails = line_to_vector(line);
                 if (tutorDetails.size() > 2)
                 {
                      tutorName = tutorDetails[1] + " " + tutorDetails[2];  // Full name: first + last
                      tutorList->Append(tutorName);  // Add tutor name to the list
                 }
-                
+                tutorDetails.clear();
             }
             tutors.close();
         }
@@ -103,14 +103,15 @@ SearchTutor::SearchTutor(wxWindow* parent)
 
                     // Ensure tutorDetails has enough elements
                     if (tutorDetails.size() >= 10) {
-                        tutorInfo = "Name: " + tutorDetails[1] + " " + tutorDetails[2] + "\n" +
-                            "Subject: " + tutorDetails[3] + "\n" +
-                            "Price: " + tutorDetails[4] + "\n" +
-                            "City: " + tutorDetails[6] + "\n" +
-                            "Country: " + tutorDetails[7] + "\n" +
-                            "Email: " + tutorDetails[8] + "\n" +  // Include email
-                            "Biography: " + tutorDetails[9] + "\n" +
-                            "Rating: " + to_string(getRating(position, true)) + "\n";
+                       tutorInfo = "Name: " + ((tutorDetails.size() > 2) ? tutorDetails[1] + " " + tutorDetails[2] : "Unknown") + "\n" +
+                            "Subject: " + ((tutorDetails.size() > 3) ? tutorDetails[3] : "Unknown") + "\n" +
+                            "Price: " + ((tutorDetails.size() > 4) ? tutorDetails[4] : "Unknown") + "\n" +
+                            "City: " + ((tutorDetails.size() > 6) ? tutorDetails[6] : "Unknown") + "\n" +
+                            "Country: " + ((tutorDetails.size() > 7) ? tutorDetails[7] : "Unknown") + "\n" +
+                            "Email: " + ((tutorDetails.size() > 8) ? tutorDetails[8] : "Unknown") + "\n" +
+                            "Biography: " + ((tutorDetails.size() > 9) ? tutorDetails[9] : "Unknown") + "\n" +
+                           "Rating: " + ((tutorDetails.size() > 5) ? to_string(getRating(position, true)) : "Unknown") + "\n";
+
                     }
                     else {
                         tutorInfo = "Error: Incomplete tutor details.";
@@ -162,15 +163,15 @@ SearchTutor::SearchTutor(wxWindow* parent)
                     vector<string> tutorDetails = GetTutorLine(position);
                     //Check this function since it may be create
                     // Display tutor information in a message box
-                    wxString tutorInfo = "Name: " + tutorDetails[1] + " " + tutorDetails[2] + "\n" +
-                        "Subject: " + tutorDetails[3] + "\n" +
-                        "Price: " + tutorDetails[4] + "\n" +
-                        "City: " + tutorDetails[6] + "\n" +
-                        "Country: " + tutorDetails[7] + "\n" +
-                        "Email: " + tutorDetails[8] + "\n" +
-                        "Biography: " + tutorDetails[9] + "\n" +
-                        "Current Rating: " + to_string(getRating(position, true)) + "\n" +
-                        "Number of Ratings: " + to_string(getRating(position, false)) + "\n";
+                    wxString tutorInfo = "Name: " + ((tutorDetails.size() > 2) ? tutorDetails[1] + " " + tutorDetails[2] : "Unknown") + "\n" +
+                        "Subject: " + ((tutorDetails.size() > 3) ? tutorDetails[3] : "Unknown") + "\n" +
+                        "Price: " + ((tutorDetails.size() > 4) ? tutorDetails[4] : "Unknown") + "\n" +
+                        "City: " + ((tutorDetails.size() > 6) ? tutorDetails[6] : "Unknown") + "\n" +
+                        "Country: " + ((tutorDetails.size() > 7) ? tutorDetails[7] : "Unknown") + "\n" +
+                        "Email: " + ((tutorDetails.size() > 8) ? tutorDetails[8] : "Unknown") + "\n" +
+                        "Biography: " + ((tutorDetails.size() > 9) ? tutorDetails[9] : "Unknown") + "\n" +
+                        "Current Rating: " + ((tutorDetails.size() > 5) ? to_string(getRating(position, true)) : "Unknown") + "\n" +
+                        "Number of Ratings: " + ((tutorDetails.size() > 5) ? to_string(getRating(position, false)) : "Unknown") + "\n";
                     // Display the tutor details
                     wxMessageBox(tutorInfo, "Tutor Information", wxOK | wxICON_INFORMATION);
                     
