@@ -4,6 +4,40 @@
 string filename1 = "ListOfTutors_F.txt";
 string filename2 = "KeyList_F.txt";
 
+
+void test_endline() {
+    //makes sure there is an empty line at the end of the text files
+    fstream tutors(filename1);
+    char testing;
+
+    if (tutors.is_open()) {
+        tutors.seekp(-1, fstream::end);
+        testing = tutors.get();
+        //cout<<"test: "<<testing<<endl;
+        if (testing == '|') {
+            tutors << endl;
+        }
+    }
+    else {
+        cout << "ListOfTutors_F.txt could not be opened. test_endline" << endl;
+        return;
+    }
+    tutors.close();
+    fstream keys(filename2);
+    if (keys.is_open()) {
+        keys.seekp(-1, fstream::end);
+        testing = keys.get();
+        if (testing == '|') {
+            keys << endl;
+        }
+    }
+    else {
+        cout << "KeyList_F.txt could not be opened. test_endline" << endl;
+        return;
+    }
+    keys.close();
+}
+
 // Function Definitions
 
 void add_tutor(const string& fname, const string& lname, const string& subject,
@@ -38,129 +72,122 @@ void add_tutor(const string& fname, const string& lname, const string& subject,
     Keys.close();
 }
 
-vector<string> line_to_vector(string input, vector<string> vec_interm) {
-    int pos1 = 0;
+vector<string> line_to_vector(const string& input) {
+    vector<string> vec_interm;
+    size_t pos1 = 0;
     char cur;
     string temp_str;
 
-    for (int i = 0; i < input.size(); i++) {
+    // Iterate over the string to extract tokens
+    for (size_t i = 0; i < input.size(); ++i) {
         cur = input[i];
         if (cur == '|') {
             temp_str = input.substr(pos1, i - pos1);
             vec_interm.push_back(temp_str);
-            pos1 = i + 1;
+            pos1 = i + 1;  // Move position to the character after '|'
         }
     }
+
+    // Handle the last token after the last '|'
+    if (pos1 < input.size()) {
+        temp_str = input.substr(pos1);  // Get the remaining substring
+        vec_interm.push_back(temp_str);
+    }
+
     return vec_interm;
 }
 
+
+
 list<vector<string>> listSort(list<vector<string>> input_list, vector<string> input_vec) {
+    //adds a value to a list in the correct location so the list is sorted
+    vector<string> vector1;
     list<vector<string>>::iterator point;
-    double rate2_d = 0.0;
+    string rate1;
+    string rate2;
+    double rate1_d;
+    double rate2_d;
 
-    // Validate input_vec size before accessing index 5
-    if (input_vec.size() > 5) {
-        string rate2_section = input_vec[5];
+    rate2 = input_vec[3];
+    rate2_d = stod(rate2);
 
-        // Extract and parse rating from input_vec[5]
-        try {
-            size_t start = rate2_section.find('*') + 1;   // Find the start of the rating
-            size_t end = rate2_section.find('^');        // Find the end of the rating
-            rate2_d = stod(rate2_section.substr(start, end - start)); // Extract and convert
-        }
-        catch (const exception& e) {
-            rate2_d = 0.0; // Default rating if invalid
-        }
-    }
-    else {
-        rate2_d = 0.0; // Default rating if input_vec is malformed
-    }
+    for (point = input_list.begin(); point != input_list.end(); point++) {
+        vector1 = *point;
 
-    for (point = input_list.begin(); point != input_list.end(); ++point) {
-        double rate1_d = 0.0;
+        rate1 = vector1[3];
+        rate1_d = stod(rate1);
 
-        // Validate current list element size before accessing index 5
-        if ((*point).size() > 5) {
-            string rate1_section = (*point)[5];
-
-            // Extract and parse rating from current list element
-            try {
-                size_t start = rate1_section.find('*') + 1;
-                size_t end = rate1_section.find('^');
-                rate1_d = stod(rate1_section.substr(start, end - start));
-            }
-            catch (const exception& e) {
-                rate1_d = 0.0; // Default rating if invalid
-            }
-        }
-        else {
-            rate1_d = 0.0; // Default rating if list element is malformed
-        }
-
-        // Insert input_vec if its rating is greater
         if (rate2_d > rate1_d) {
             input_list.insert(point, input_vec);
             return input_list;
         }
+        vector1.clear();
     }
-
-    // Append to the back if no higher rating is found
     input_list.push_back(input_vec);
     return input_list;
+
 }
 
-
-
-
 queue<vector<string>> sortQ(queue<vector<string>> input) {
+    //sorts a list by rating in decending order
+    //takes an unsorted queue as an input and oupputs a sorted queue
     list<vector<string>> sortingList;
+    vector<string> vector1;
 
-    // Initialize sorting list with the first element
-    if (!input.empty()) {
-        sortingList.push_back(input.front());
-        input.pop();
-    }
+    vector1 = input.front();
+    input.pop();
+    sortingList.push_front(vector1);
+    vector1.clear();
 
-    // Sort remaining elements
     while (!input.empty()) {
-        vector<string> vector1 = input.front();
+        vector1 = input.front();
         input.pop();
         sortingList = listSort(sortingList, vector1);
+        vector1.clear();
     }
-
-    // Rebuild the queue from the sorted list
-    for (const auto& vec : sortingList) {
-        input.push(vec);
+    long sortSize = sortingList.size();
+    for (long i = 0; i < sortSize; i++) {
+        input.push(sortingList.front());
+        sortingList.pop_front();
     }
-
     return input;
 }
 
 
-
 queue<vector<string>> SearchKeyFile(queue<vector<string>> Results, string key1) {
-    fstream Keys(filename2);
-    string test;
+    fstream Keys(filename2); // Open the file containing the keys
+    string line;
     vector<string> temp_vector;
 
-    if (Keys.is_open()) {
-        while (!Keys.eof()) {
-            getline(Keys, test);
-            if (test.find(key1) != string::npos) {
-                temp_vector = line_to_vector(test, temp_vector);
-                Results.push(temp_vector);
-                temp_vector.clear();
-            }
+    if (!Keys.is_open()) {
+        cout << "KeyList_F.txt could not be opened in SearchKeyFile" << endl;
+        return Results; // Return empty or unmodified Results if file cannot be opened
+    }
+
+    // Process each line in the file
+    while (getline(Keys, line)) {
+        if (key1 == "all" || line.find(key1) != string::npos) {
+            // Convert the line to a vector and add it to the queue
+            temp_vector = line_to_vector(line);
+            Results.push(temp_vector);
+            //temp_vector.clear();
         }
     }
-    else {
-        cout << "KeyList_F.txt could not be opened in Search function" << endl;
-        return Results;
+
+    Keys.close(); // Close the file
+
+    // Handle cases based on the size of the results
+    if (Results.empty()) {
+        cout << "No matching results found in SearchKeyFile." << endl;
     }
-    Keys.close();
-    Results = sortQ(Results);
+    else if (Results.size() > 1 && key1 != "all") {
+        // Sort the results only if there are multiple items and key1 is not "all"
+        Results = sortQ(Results);
+    }
+
     return Results;
 }
+
 
 void printV(vector<string> input) {
     for (int i = 0; i < input.size(); i++) {
@@ -184,7 +211,7 @@ vector<string> GetTutorLine(double location) {
     if (tutors.is_open()) {
         tutors.seekg(location);
         getline(tutors, line);
-        interm = line_to_vector(line, interm);
+        interm = line_to_vector(line);
     }
     else {
         cout << "ListOfTutors_F.txt could not be opened in GetTutorLine" << endl;
@@ -195,167 +222,151 @@ vector<string> GetTutorLine(double location) {
 }
 
 double getRating(double location, bool R_or_num) {
-    // Opens the main data file to fetch tutor rating or number of ratings
-    vector<string> interm;
-    string rate_Section;
-    string cur_R_str;
-    string num_rates_str;
-    double current_R = 0.0;
-    double num_rates = 0.0;
-
-    // Fetch the tutor line using the provided location
-    interm = GetTutorLine(location);
-    if (interm.empty()) {
-        cout << "Error: Could not retrieve tutor details at the specified location." << endl;
-        return 0;
+    fstream tutors("ListOfTutors_F.txt");
+    if (!tutors.is_open()) {
+        cerr << "Error opening ListOfTutors_F.txt\n";
+        return 0.0;
     }
 
-    // Extract the ratings section
-    if (interm.size() > 5) {
-        rate_Section = interm[5];
-
-        // Split the ratings section into rating and number of ratings
-        size_t separatorPos = rate_Section.find('|');
-        if (separatorPos != string::npos) {
-            cur_R_str = rate_Section.substr(0, separatorPos);       // Part before '|'
-            num_rates_str = rate_Section.substr(separatorPos + 1); // Part after '|'
-        }
-        else {
-            cout << "Error: Malformed ratings section: " << rate_Section << endl;
-            return 0;
-        }
-
-        // Parse rating and number of ratings
-        try {
-            current_R = cur_R_str.empty() ? 0.0 : stod(cur_R_str);
-            num_rates = num_rates_str.empty() ? 0.0 : stod(num_rates_str);
-        }
-        catch (const invalid_argument& e) {
-            cout << "Error: Invalid rating format. " << e.what() << endl;
-            return 0;
-        }
-        catch (const out_of_range& e) {
-            cout << "Error: Rating value out of range. " << e.what() << endl;
-            return 0;
-        }
+    vector<string> tutorDetails = GetTutorLine(location);
+    if (tutorDetails.size() <= 5) {
+        cerr << "Invalid tutor data at location: " << location << endl;
+        return 0.0;
     }
 
-    // Return the requested value
-    return R_or_num ? current_R : num_rates;
+    string rateSection = tutorDetails[5]; // Ensure this is correctly parsed
+    size_t ratingStart = rateSection.find('*');
+    size_t ratingsStart = rateSection.find('^');
+
+    if (ratingStart == string::npos || ratingsStart == string::npos) {
+        cerr << "Invalid rating section format: " << rateSection << endl;
+        return 0.0;
+    }
+
+    if (R_or_num) {
+        // Extract rating
+        return stod(rateSection.substr(ratingStart + 1, ratingsStart - ratingStart - 1));
+    }
+    else {
+        // Extract number of ratings
+        return stod(rateSection.substr(ratingsStart + 1));
+    }
 }
 
 
-void insert_New_Rating(double location, float Rate, double num_rate) {
-    fstream tutors(filename1);
-    vector<string> interm;
-    string rate_Section;
-    char search;
-    string rate_str;
-    string num_str;
-    char const* rate_char;
-    char const* num_char;
-    double position = 0;
-    double error;
-    double calc;
+string joinTutorLine(const vector<string>& tutorDetails) {
+    stringstream joinedLine;
 
-    if (tutors.is_open()) {
-        tutors.seekg(0);
-        tutors.seekp(0);
-        tutors.seekg(location);
-        tutors.seekp(location);
-        search = tutors.get();
-        calc = tutors.tellg();
-        error = (calc - 1) - location;
-
-        while (search != '*') {
-            search = tutors.get();
+    for (size_t i = 0; i < tutorDetails.size(); ++i) {
+        joinedLine << tutorDetails[i];
+        if (i < tutorDetails.size()) {  // Avoid appending '|' to the last element
+            joinedLine << "|";
         }
-        calc = tutors.tellg();
-        tutors.seekp(calc - error);
-
-        rate_str = to_string(Rate);
-        rate_str.resize(3);
-        rate_char = rate_str.c_str();
-
-        num_str = to_string(num_rate);
-        num_str.resize(6);
-        num_char = num_str.c_str();
-        tutors.write(rate_char, 3);
-        position = tutors.tellp();
-        tutors.seekp(position + 2);
-        tutors.write(num_char, 6);
+        joinedLine << "|";
     }
-    else {
-        cout << "ListOfTutors_F.txt could not be opened in insert_New_Rating" << endl;
+
+    joinedLine << "\n"; // Add a newline at the end
+    return joinedLine.str();
+}
+
+
+void insert_New_Rating(double location, double newRating) {
+    fstream tutors("ListOfTutors_F.txt", ios::in | ios::out);
+    if (!tutors.is_open()) {
+        cerr << "Error opening ListOfTutors_F.txt\n";
         return;
+    }
+
+    // Convert location to an integer index (if necessary)
+    int index = static_cast<int>(location);  // Assuming location is meant to be an index
+
+    vector<string> tutorLine = GetTutorLine(index);
+    if (tutorLine.size() <= 5) {
+        cerr << "Invalid tutor data at location: " << index << endl;
+        return;
+    }
+
+    string rateSection = tutorLine[5];
+    size_t ratingStart = rateSection.find('*');
+    size_t ratingsStart = rateSection.find('^');
+    if (ratingStart == string::npos || ratingsStart == string::npos) {
+        cerr << "Invalid rating section format: " << rateSection << endl;
+        return;
+    }
+
+    double currentRating = stod(rateSection.substr(ratingStart + 1, ratingsStart - ratingStart - 1));
+    double numRatings = stod(rateSection.substr(ratingsStart + 1));
+
+    double updatedRating = (currentRating * numRatings + newRating) / (numRatings + 1);
+    double updatedNumRatings = numRatings + 1;
+
+    // Update the rating section
+    tutorLine[5] = "*" + to_string(updatedRating) + "^" + to_string(updatedNumRatings) + "^";
+
+    // Read all lines into a vector
+    string line;
+    vector<string> allLines;
+    while (getline(tutors, line)) {
+        allLines.push_back(line);
     }
     tutors.close();
 
-    fstream keys(filename2);
-    vector<string> keyLine;
-    string locationString;
-    string tempLine;
-    double locationKeys;
-    string temp_str;
-    double errorLocation;
-    int errorKeys1;
-    int errorKeys2;
-    long errorCount = 1;
-
-    if (keys.is_open()) {
-        locationString = to_string((long)location);
-        keys.seekp(0);
-        getline(keys, tempLine);
-        errorKeys2 = keys.tellp();
-        errorKeys1 = tempLine.size();
-
-        keys.seekp(0);
-        error = errorKeys2 - errorKeys1;
-
-        while (!keys.eof()) {
-            locationKeys = keys.tellg();
-            getline(keys, tempLine);
-            keyLine = line_to_vector(tempLine, keyLine);
-            if (keyLine[0] == locationString) {
-                keyLine[3] = rate_str;
-                keys.seekp(0);
-                locationKeys = locationKeys - (error - errorCount);
-                if (locationKeys < 0) {
-                    locationKeys = 0;
-                }
-                keys.seekp(locationKeys);
-                for (int i = 0; i < 4; i++) {
-                    temp_str = keyLine[i];
-                    keys.write(temp_str.c_str(), temp_str.size());
-                    locationKeys = keys.tellp();
-                    keys.seekp(locationKeys + 1);
-                }
-                keys.close();
-                return;
-            }
-            errorCount++;
-            keyLine.clear();
-        }
+    // Check bounds before modifying the line
+    if (index >= 0 && index < allLines.size()) {
+        allLines[index] = joinTutorLine(tutorLine);  // Ensure joinTutorLine works correctly
     }
     else {
-        cout << "KeyList_F.txt could not be opened in insert_New_Rating" << endl;
+        cerr << "Error: Invalid location." << endl;
         return;
     }
+
+    // Open file in write mode and overwrite with updated data
+    fstream outFile("ListOfTutors_F.txt", ios::out | ios::trunc);
+    if (!outFile.is_open()) {
+        cerr << "Error opening ListOfTutors_F.txt for writing\n";
+        return;
+    }
+
+    for (const string& updatedLine : allLines) {
+        outFile << updatedLine << endl;
+    }
+    outFile.close();
 }
 
+
 void Rate_Tutor(double location, double new_rate) {
-    double cur_rate;
-    double num_rate;
-    double new_num_rate;
-    float calc;
+    double cur_rate = getRating(location, true);
+    double num_rate = getRating(location, false);
 
-    cur_rate = getRating(location, true);
-    num_rate = getRating(location, false);
+    // Debugging output to verify the values retrieved
+    cout << "Current Rating: " << cur_rate << endl;
+    cout << "Number of Ratings: " << num_rate << endl;
+    cout << "New Rating: " << new_rate << endl;
 
-    calc = (cur_rate * num_rate) + new_rate;
-    new_num_rate = num_rate + 1;
-    calc = calc / (new_num_rate);
-    calc = roundf(calc * 10) / 10;
+    // Validate inputs
+    if (cur_rate < 0 || num_rate < 0 || new_rate < 0) {
+        cout << "Invalid rating values encountered." << endl;
+        return;
+    }
 
-    insert_New_Rating(location, calc, new_num_rate);
+    // Calculate the new average rating
+    double total_rating_sum = (cur_rate * num_rate) + new_rate;
+    double new_num_rate = num_rate + 1;
+
+    if (new_num_rate == 0) { // Shouldn't happen, but safety check
+        cout << "Error: Division by zero when calculating the new rating." << endl;
+        return;
+    }
+
+    double new_avg_rating = total_rating_sum / new_num_rate;
+
+    // Round to one decimal place
+    new_avg_rating = round(new_avg_rating * 10.0) / 10.0;
+
+    // Debugging output
+    cout << "Updated Rating: " << new_avg_rating << endl;
+    cout << "Updated Number of Ratings: " << new_num_rate << endl;
+
+    // Update the rating in the data file
+    insert_New_Rating(location, new_avg_rating);
 }
