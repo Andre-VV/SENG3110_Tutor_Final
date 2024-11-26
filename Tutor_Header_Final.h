@@ -8,7 +8,7 @@
 #include <queue>
 #include <math.h>
 #include <list>
-
+#include <sstream>
 using namespace std;
 
 // File names to use in functions
@@ -23,14 +23,13 @@ void add_tutor(const string& fname, const string& lname, const string& subject,
     const string& email, const string& bio);
 
 // Converts a string from a file to a vector using "|" as a delimiter
-vector<string> line_to_vector(string input, vector<string> vec_interm);
-
+vector<string> line_to_vector(const string& input);
 // Adds a value to a list in the correct location so the list is sorted
 list<vector<string>> listSort(list<vector<string>> input_list, vector<string> input_vec);
-
-// Sorts a queue by rating in descending order
+//Sorts queue
 queue<vector<string>> sortQ(queue<vector<string>> input);
-
+//Joins together line to avoid issues in regards to spaces and the like
+string joinTutorLine(const vector<string>& tutorDetails);
 // Searches the key file for a key and adds it to a queue
 queue<vector<string>> SearchKeyFile(queue<vector<string>> Results, string key1);
 
@@ -47,7 +46,7 @@ vector<string> GetTutorLine(double location);
 double getRating(double location, bool R_or_num);
 
 // Inserts a rating and number of ratings into the main data file and updates the key file
-void insert_New_Rating(double location, float Rate, double num_rate);
+void insert_New_Rating(double location, double newRating);
 
 // Rates a tutor by calculating the new rating and number of ratings, and then updates the files
 void Rate_Tutor(double location, double new_rate);
