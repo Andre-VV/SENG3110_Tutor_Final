@@ -64,8 +64,7 @@ SearchTutor::SearchTutor(wxWindow* parent)
         RateTutor(tutorList, selectedIndex, filterDropdown);
         });
 }
-
-// Function to populate all tutors
+//Function to show all tutors, sorted since it doesn't look right otherwise
 void SearchTutor::PopulateAllTutors(wxListBox* tutorList) {
     std::ifstream tutorsFile("ListOfTutors_F.txt");
     if (!tutorsFile.is_open()) {
@@ -73,16 +72,40 @@ void SearchTutor::PopulateAllTutors(wxListBox* tutorList) {
         return;
     }
 
+    std::vector<std::vector<std::string>> tutors;
+
+    // Read all tutor data into a vector
     std::string line;
     while (std::getline(tutorsFile, line)) {
         std::vector<std::string> tutorDetails = line_to_vector(line);
-        if (tutorDetails.size() > 2) {
-            std::string tutorName = tutorDetails[1] + " " + tutorDetails[2];
-            tutorList->Append(tutorName);
+        if (tutorDetails.size() > 5) {
+            tutors.push_back(tutorDetails);  // Store each tutor's details
         }
     }
 
+    // Close the file
     tutorsFile.close();
+
+    // Sort the tutors based on the rating in the 5th column 
+    std::sort(tutors.begin(), tutors.end(), [](const std::vector<std::string>& a, const std::vector<std::string>& b) {
+        // Extract the ratings from the 5th column 
+        size_t ratingStartA = a[5].find('*');
+        size_t ratingEndA = a[5].find('^');
+        double ratingA = std::stod(a[5].substr(ratingStartA + 1, ratingEndA - ratingStartA - 1));
+
+        size_t ratingStartB = b[5].find('*');
+        size_t ratingEndB = b[5].find('^');
+        double ratingB = std::stod(b[5].substr(ratingStartB + 1, ratingEndB - ratingStartB - 1));
+
+        return ratingA > ratingB;  // Sort in descending order of ratings
+        });
+
+    // Clear the existing list box and append sorted tutor names
+    tutorList->Clear();
+    for (const auto& tutor : tutors) {
+        std::string tutorName = tutor[1] + " " + tutor[2];  // Full name (First name + Last name)
+        tutorList->Append(tutorName);
+    }
 }
 
 // Function to populate tutors filtered by subject
