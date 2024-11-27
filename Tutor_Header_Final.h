@@ -9,6 +9,8 @@
 #include <cmath>
 #include <list>
 #include <sstream>
+#include <algorithm>
+#include <functional>
 
 // File names to use in functions
 extern std::string filename1; // ListOfTutors_F.txt
@@ -46,7 +48,12 @@ std::vector<std::string> GetTutorLine(double location);
 double getRating(double location, bool R_or_num);
 
 // Inserts a rating and number of ratings into the main data file and updates the key file
-void insert_New_Rating(double location, double newRating);
+void insert_New_Rating(double tutorKey, double newRating);
+//Function to split the line
+std::vector<std::string> splitLine(const std::string& line);
+
+//Function to grab the rating in the right position
+double extractRating(const std::string& ratingSection);
 
 // Rates a tutor by calculating the new rating and number of ratings, and then updates the files
 void Rate_Tutor(double location, double new_rate);
