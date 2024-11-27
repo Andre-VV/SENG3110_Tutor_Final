@@ -9,6 +9,8 @@
 #include <math.h>
 #include <list>
 #include <sstream>
+
+
 using namespace std;
 
 // File names to use in functions
@@ -23,12 +25,12 @@ void add_tutor(const string& fname, const string& lname, const string& subject,
     const string& email, const string& bio);
 
 // Converts a string from a file to a vector using "|" as a delimiter
-vector<string> line_to_vector(const string& input);
-// Adds a value to a list in the correct location so the list is sorted
+vector<string> line_to_vector(const string& line);
+
 list<vector<string>> listSort(list<vector<string>> input_list, vector<string> input_vec);
-//Sorts queue
+
 queue<vector<string>> sortQ(queue<vector<string>> input);
-//Joins together line to avoid issues in regards to spaces and the like
+
 string joinTutorLine(const vector<string>& tutorDetails);
 // Searches the key file for a key and adds it to a queue
 queue<vector<string>> SearchKeyFile(queue<vector<string>> Results, string key1);
