@@ -52,9 +52,11 @@ void add_tutor(const string& fname,
     //Adds a entry to main data file and an entry to the key file
     double position;
     fstream tutors(filename1);
-    tutors.seekp(0, fstream::end);
-    cout << "Fuction running" << endl;
+    
+   
     if (tutors.is_open()) {
+        //if file is open seek to the end and print info
+        tutors.seekp(0, fstream::end);
         position = tutors.tellp();
         tutors << position << "|" << fname << "|" << lname << "|" << subject << "|" << price << "|" << "*0.0 ^0.0000^" << "|" << city << "|" << country << "|" << email << "|" << bio << "|" << endl;
     }
@@ -64,8 +66,10 @@ void add_tutor(const string& fname,
     }
     tutors.close();
     fstream Keys(filename2);
-    Keys.seekp(0, fstream::end);
+    
     if (Keys.is_open()) {
+        //if file is open seek to end an print location of main data and key info
+        Keys.seekp(0, fstream::end);
         Keys << position << "|" << subject << "|" << price << "|" << "0.0" << "|" << endl;
     }
     else {
@@ -105,6 +109,7 @@ list<vector<string>> listSort(list<vector<string>> input_list, vector<string> in
     rate2_d = stod(rate2);
 
     for (point = input_list.begin(); point != input_list.end(); point++) {
+        //iterates through the list and inserts value 1 ahead when it is greater then the current value
         vector1 = *point;
 
         rate1 = vector1[3];
@@ -138,6 +143,7 @@ queue<vector<string>> sortQ(queue<vector<string>> input) {
     vector1.clear();
 
     while (!input.empty()) {
+        //empties queue and pases each value to the sorting function
         vector1 = input.front();
         input.pop();
         sortingList = listSort(sortingList, vector1);
@@ -218,8 +224,8 @@ vector<string> GetTutorLine(double location) {
 }
 
 double getRating(double location, bool R_or_num) {
-    //gets the rating or the number of rating from a line in the main data file
-    //based on location
+    //gets the rating or the number of rating from a line in the main data file -
+    //- based on location
     //True returns rating. False returns number of ratings
     fstream tutors(filename1);
     vector<string> interm;
@@ -378,6 +384,7 @@ void Rate_Tutor(double location, double new_rate) {
     cur_rate = getRating(location, true);
     num_rate = getRating(location, false);
 
+    //calculates new rating including past values
     calc = (cur_rate * num_rate) + new_rate;
     new_num_rate = num_rate + 1;
     calc = calc / (new_num_rate);
