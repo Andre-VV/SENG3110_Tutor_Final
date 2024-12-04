@@ -15,7 +15,6 @@ void test_endline() {
     if (tutors.is_open()) {
         tutors.seekp(-1, fstream::end);
         testing = tutors.get();
-        //cout<<"test: "<<testing<<endl;
         if (testing == '|') {
             tutors << endl;
         }
@@ -56,9 +55,7 @@ void add_tutor(const string& fname,
     tutors.seekp(0, fstream::end);
     cout << "Fuction running" << endl;
     if (tutors.is_open()) {
-        //cout<<"tutors open"<<endl;
         position = tutors.tellp();
-        //cout<<position<<endl;
         tutors << position << "|" << fname << "|" << lname << "|" << subject << "|" << price << "|" << "*0.0 ^0.0000^" << "|" << city << "|" << country << "|" << email << "|" << bio << "|" << endl;
     }
     else {
@@ -69,7 +66,6 @@ void add_tutor(const string& fname,
     fstream Keys(filename2);
     Keys.seekp(0, fstream::end);
     if (Keys.is_open()) {
-        //cout<<"Keys open"<<endl;
         Keys << position << "|" << subject << "|" << price << "|" << "0.0" << "|" << endl;
     }
     else {
@@ -128,6 +124,8 @@ list<vector<string>> listSort(list<vector<string>> input_list, vector<string> in
 queue<vector<string>> sortQ(queue<vector<string>> input) {
     //sorts a list by rating in decending order
     //takes an unsorted queue as an input and oupputs a sorted queue
+    //version of insertion sort: O(n^2)
+
     list<vector<string>> sortingList;
     vector<string> vector1;
     if (input.empty()) {
@@ -161,7 +159,6 @@ queue<vector<string>> SearchKeyFile(
     fstream Keys(filename2);
     string test;
     vector<string> temp_vector;
-    //cout << "SearchKeyFile" << endl;
 
 
     if (Keys.is_open()) {
@@ -193,7 +190,7 @@ void printV(vector<string> input) {
     cout << endl;
 }
 void printQ(queue<vector<string>> input) {
-    //using printV prints a queue to the terminal
+    //prints a queue to the terminal using printV 
     while (!input.empty()) {
         printV(input.front());
         input.pop();
@@ -238,9 +235,7 @@ double getRating(double location, bool R_or_num) {
         if (R_or_num == true) {
             cur_R_str = rate_Section.substr(1, 3);
             current_R = stod(cur_R_str);
-            //cout<<current_R<<endl;
             tutors.close();
-            //cout<<endl<<"Found rating: "<<current_R<<endl;
             return current_R;
         }
         else {
@@ -251,9 +246,7 @@ double getRating(double location, bool R_or_num) {
                 }
             }
             num_rates = stod(num_rates_str);
-            //cout<<num_rates<<endl;
             tutors.close();
-            //cout<<endl<<"Found number of Ratings: "<<num_rates;
             return num_rates;
         }
     }
@@ -287,34 +280,23 @@ void insert_New_Rating(double location, float Rate, double num_rate) {
         tutors.seekp(0);
         tutors.seekg(location);
         tutors.seekp(location);
-        //cout<<endl<<endl;
         search = tutors.get();
         calc = tutors.tellg();
         error = (calc - 1) - location;
-        //cout<<"error: "<<error<<endl;
 
         while (search != '*') {
             search = tutors.get();
-            //cout<<search<<tutors.tellg()<<endl;
-
         }
         calc = tutors.tellg();
         tutors.seekp(calc - error);
 
 
         rate_str = to_string(Rate);
-        //cout<<endl<<"rate_str: "<<rate_str<<endl;
         rate_str.resize(3);
-        //cout<<"rate_str: "<<rate_str<<endl;
         rate_char = rate_str.c_str();
-        //cout<<"rate_char: "<<rate_char<<endl;
-
         num_str = to_string(num_rate);
-        //cout<<endl<<"num_str: "<<num_str<<endl;
         num_str.resize(6);
-        //cout<<"num_str: "<<num_str<<endl;
         num_char = num_str.c_str();
-        //cout<<"num_char: "<<num_char<<endl;
         tutors.write(rate_char, 3);
         position = tutors.tellp();
         tutors.seekp(position + 2);
@@ -339,47 +321,33 @@ void insert_New_Rating(double location, float Rate, double num_rate) {
 
 
     if (keys.is_open()) {
-        //cout<<endl<<"keyfile part:"<<endl<<"location double: "<<location<<endl;
         locationString = to_string((long)location);
-        //cout<<"Location string: "<<locationString<<endl;
         keys.seekp(0);
-        //cout<<"location: "<<keys.tellp()<<endl;
         getline(keys, tempLine);
         errorKeys2 = keys.tellp();
-        //cout<<"start of line 2: "<<errorKeys2<<endl;
         errorKeys1 = tempLine.size();
-        //cout<<"size of line 1: "<<errorKeys1<<endl;
 
         keys.seekp(0);
         error = errorKeys2 - errorKeys1;
-        //cout<<"error: "<<error<<endl;
 
 
 
         while (!keys.eof()) {
             locationKeys = keys.tellg();
-            //cout<<"searching: "<<locationKeys<<endl;
             getline(keys, tempLine);
             keyLine = line_to_vector(tempLine, keyLine);
             if (keyLine[0] == locationString) {
-                ;
-                //cout<<"Found: "<<keys.tellg()<<"  Write location: "<<keys.tellp()<<endl;
                 keyLine[3] = rate_str;
                 keys.seekp(0);
-                //cout<<"Return to begining: "<<keys.tellp()<<endl;
-                //locationKeys = locationKeys - (error - errorCount);
                 if (locationKeys < 0) {
                     locationKeys = 0;
                 }
                 keys.seekp(locationKeys);
-                //cout<<"write Location: "<<keys.tellp()<<endl;
                 for (int i = 0; i < 4; i++) {
                     temp_str = keyLine[i];
-                    //cout<<"inserting: "<<temp_str<<"  Location: "<<keys.tellp()<<endl;
                     keys.write(temp_str.c_str(), temp_str.size());
                     locationKeys = keys.tellp();
                     keys.seekp(locationKeys + 1);
-                    //cout<<"end location: "<<keys.tellp()<<endl;
 
                 }
                 keys.close();
@@ -413,9 +381,6 @@ void Rate_Tutor(double location, double new_rate) {
     calc = (cur_rate * num_rate) + new_rate;
     new_num_rate = num_rate + 1;
     calc = calc / (new_num_rate);
-    //cout<<endl<<calc<<endl;
     calc = roundf(calc * 10) / 10;
-    //cout<<calc<<endl;
-
     insert_New_Rating(location, calc, new_num_rate);
 }
