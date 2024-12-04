@@ -1,0 +1,10 @@
+0|Olivia|Carter|Math|25|*0.0 ^0.0000^|Toronto|Canada|olivia@gmail.com|A passionate math tutor with 5 years of experience, specializing in high school algebra and calculus|
+173|Liam|Rodriguez|Science|30|*0.0 ^0.0000^|Miami|USA|liam@gmail.com|A dedicated science enthusiast who loves making biology and physics easy to understand|
+331|Emily|Khan|Chemistry|40|*0.0 ^0.0000^|London|UK|emily@outlook.com|Expert in organic and inorganic chemistry, with a PhD and 10 years of teaching experience|
+493|Ethan|Patel|Math|20|*0.0 ^0.0000^|Sydney|Australia|ethan@gmail.com|A university student offering affordable tutoring in geometry, algebra, and trigonometry|
+655|Sophia|Muller|Science|35|*0.0 ^0.0000^|Berlin|Germany|sophia@web.de|Specializes in simplifying complex scientific concepts for high school and university students|
+824|Noah|Kim|Chemistry|28|*0.0 ^0.0000^|Seoul|South Korea|noah@gmail.com|Chemistry tutor with a knack for making stoichiometry and thermodynamics engaging|
+981|Ava|Silva|Math|22|*0.0 ^0.0000^|Lisbon|Portugal|ava@live.com|Enthusiastic about teaching math to middle and high school students, focusing on problem-solving skills|
+1152|Lucas|Ahmed|Science|27|*0.0 ^0.0000^|Cairo|Egypt|lucas@gmail.com|Experienced in tutoring physics and earth sciences, with a focus on practical applications|
+1315|Isabella|Dupont|Chemistry|50|*0.0 ^0.0000^|Paris|France|isabella@orange.fr|A professional chemist with over a decade of experience, specializing in molecular chemistry|
+1490|Mason|Lee|Math|18|*0.0 ^0.0000^|Vancouver|Canada|mason@gmail.com|University sophomore with a passion for helping peers excel in calculus and statistics|

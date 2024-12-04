@@ -1,0 +1,10 @@
+0|Math|25|0.0|
+173|Science|30|0.0|
+331|Chemistry|40|0.0|
+493|Math|20|0.0|
+655|Science|35|0.0|
+824|Chemistry|28|0.0|
+981|Math|22|0.0|
+1152|Science|27|0.0|
+1315|Chemistry|50|0.0|
+1490|Math|18|0.0|
